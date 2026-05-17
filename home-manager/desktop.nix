@@ -1,0 +1,74 @@
+{ pkgs, inputs, ... }: 
+let
+  spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.system};
+in {
+  home.packages = with pkgs; [
+    zotero
+    obsidian
+    libreoffice-qt
+    telegram-desktop
+    vesktop
+    nautilus
+    seahorse
+    proton-vpn
+    blender
+    onlyoffice-desktopeditors
+
+    # bottles
+    # microsoft-edge
+    # games
+  ];
+  
+  programs.lutris = {
+    enable = true;
+
+    defaultWinePackage = pkgs.proton-ge-bin;
+    protonPackages = [ pkgs.proton-ge-bin ]; # config.programs.steam.extraCompatPackages;
+  };
+
+
+  programs.spicetify = {
+    enable = true;
+    enabledExtensions = with spicePkgs.extensions; [
+      adblockify
+      hidePodcasts
+      shuffle
+      songStats
+      autoVolume
+      beautifulLyrics
+    ];
+  };
+
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "text/html"              = "firefox.desktop";
+      "x-scheme-handler/http"  = "firefox.desktop";
+      "x-scheme-handler/https" = "firefox.desktop";
+      "application/pdf"        = "firefox.desktop";
+    };
+  };
+  services.vicinae = {
+  enable = true;
+  systemd = {
+    enable = true;
+    autoStart = true; # default: false
+    environment = {
+      USE_LAYER_SHELL = 1;
+    };
+  };
+  settings = {
+    close_on_focus_loss = true;
+    consider_preedit = true;
+    pop_to_root_on_close = true;
+    favicon_service = "twenty";
+    search_files_in_root = true;
+  };
+  extensions = with inputs.vicinae-extensions.packages.${pkgs.stdenv.hostPlatform.system}; [
+     bluetooth
+     nix
+     # power-profile
+    # Extension names can be found in the link below, it's just the folder names
+    ];
+  };
+}
