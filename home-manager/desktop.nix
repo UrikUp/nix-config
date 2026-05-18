@@ -17,6 +17,12 @@ in {
     # bottles
     # microsoft-edge
     # games
+    hydralauncher
+    cemu
+    gamescope
+    gamemode
+    qbittorrent
+    pcsx2
   ];
   
   programs.lutris = {

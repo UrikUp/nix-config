@@ -1,10 +1,7 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    # quickshell = {
-    #   url = "github:outfoxxed/quickshell";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
+
     stylix = {
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -39,7 +36,9 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-  };
+    determinate.url =
+      "https://flakehub.com/f/DeterminateSystems/determinate/*";
+    };
 
   outputs = inputs: {
     nixosConfigurations.nixos = inputs.nixpkgs.lib.nixosSystem {
@@ -48,9 +47,8 @@
       modules = [
         ./nixos/configuration.nix
         inputs.stylix.nixosModules.stylix
-        # inputs.noctalia.nixosModules.default
         inputs.home-manager.nixosModules.default
-        # inputs.mangowm.nixosModules.mango
+        inputs.determinate.nixosModules.default
         inputs.agenix.nixosModules.default
         { nixpkgs.overlays = import ./overlays { inherit inputs; }; }
       ];
