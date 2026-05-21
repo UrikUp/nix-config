@@ -1,38 +1,26 @@
 { pkgs, config, ... }:
 let
   link = config.lib.file.mkOutOfStoreSymlink;
-  dots = "/home/urik/nix/home-manager/dotfiles";
+  dots = "/home/urik/nix/home/dotfiles";
 in
 {
   home.packages = with pkgs; [
     stow
-    eza
+    eza    
     fd
-    uv
-    ffmpeg
     gh
     mosh
     evil-helix
     jq
-    presenterm
-    android-tools
     ripgrep
     lazygit
     btop
-    grc
-    php83 php83Packages.composer
-    wifitui
     devenv
-    pdf-cli
     wget
-    ruff ty # for python
-    vscode-langservers-extracted # for html and django templates
-    bruno
     tldr
     p7zip unzip zip
     fastfetch
     tmux
-    sniffnet
   ];
 
   xdg.configFile."tmux/tmux.conf".source = link "${dots}/tmux/tmux.conf";
@@ -54,7 +42,6 @@ in
         "fzf-fish"
         "autopair"
         "done"
-        "grc"
         # "sponge" # get irritating when fixing commands
         "colored-man-pages"
         "puffer" # makes ... -> ../..
@@ -131,8 +118,5 @@ in
     diff-so-fancy.enable = false;
   };
   
-  services.syncthing = {
-    enable = true;
-  };
 }
 

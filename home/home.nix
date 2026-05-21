@@ -6,8 +6,6 @@
       ./media.nix
       ./desktop.nix
       ./dev.nix
-      # ./home/theming.nix
-      # ./home/stylix.nix
       ./firefox.nix
       ./rclone.nix
       ./stylix.nix

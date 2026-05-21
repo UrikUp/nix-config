@@ -66,6 +66,7 @@ in {
       USE_LAYER_SHELL = 1;
     };
   };
+
   settings = {
     close_on_focus_loss = true;
     consider_preedit = true;
@@ -79,5 +80,9 @@ in {
      # power-profile
     # Extension names can be found in the link below, it's just the folder names
     ];
+  };
+
+  services.syncthing = {
+    enable = true;
   };
 }
