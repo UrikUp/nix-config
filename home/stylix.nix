@@ -2,7 +2,7 @@
 {
   stylix = {
     enable = true;
-    image = ../nixos/wallpaper.jpg;
+    image = ../modules/wallpaper.jpg;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/default-dark.yaml";
     polarity = "dark";
     cursor = {

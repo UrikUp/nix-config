@@ -1,4 +1,5 @@
 { pkgs, inputs, ... }: {
+  nixpkgs.config.allowUnfree = true; 
   environment = {
     localBinInPath = true;
     systemPackages = with pkgs; [

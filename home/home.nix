@@ -1,7 +1,8 @@
 { inputs, pkgs, config, lib, ... }:
 {
   imports = [
-      ./cli.nix
+      ./common/default.nix
+
       ./terminal.nix
       ./media.nix
       ./desktop.nix
@@ -16,11 +17,6 @@
   programs.home-manager.enable = true;
 
   home = {
-    packages = [
-      pkgs.inter
-      pkgs.nerd-fonts.jetbrains-mono
-      pkgs.kdePackages.qtstyleplugin-kvantum
-    ];
     sessionVariables = {
       EDITOR        = "hx";
       XCURSOR_THEME = "Bibata-Modern-Classic";
