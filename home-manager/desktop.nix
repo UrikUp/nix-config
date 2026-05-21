@@ -23,6 +23,9 @@ in {
     gamemode
     qbittorrent
     pcsx2
+    appimage-run
+    inputs.freesmlauncher.packages.${pkgs.system}.freesmlauncher
+    mangohud
   ];
   
   programs.lutris = {

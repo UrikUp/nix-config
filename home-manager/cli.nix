@@ -1,5 +1,9 @@
-{ pkgs, ... }: {
-
+{ pkgs, config, ... }:
+let
+  link = config.lib.file.mkOutOfStoreSymlink;
+  dots = "/home/urik/nix/home-manager/dotfiles";
+in
+{
   home.packages = with pkgs; [
     stow
     eza
@@ -7,7 +11,6 @@
     uv
     ffmpeg
     gh
-    p7zip
     mosh
     evil-helix
     jq
@@ -17,8 +20,7 @@
     lazygit
     btop
     grc
-    php83
-    php83Packages.composer
+    php83 php83Packages.composer
     wifitui
     devenv
     pdf-cli
@@ -27,11 +29,13 @@
     vscode-langservers-extracted # for html and django templates
     bruno
     tldr
-    unzip
-    zip
+    p7zip unzip zip
+    fastfetch
+    tmux
+    sniffnet
   ];
 
-  
+  xdg.configFile."tmux/tmux.conf".source = link "${dots}/tmux/tmux.conf";
   programs = {
     direnv = {
       enable = true;
@@ -79,21 +83,22 @@
         };
       };
     };
-    tmux = {
-      enable = true;
-      # catppuccin.enable = true;
-      mouse = true;
-      baseIndex = 1;
-      keyMode = "vi";
-      # shell = "fish";
-      # shortcut = "a";   # ctrl+a instead of ctrl+b
-      terminal = "tmux-256color";
-      extraConfig = ''
-        set -ag terminal-overrides ",*:RGB"
-        bind | split-window -h -c "#{pane_current_path}"
-        bind - split-window -v -c "#{pane_current_path}"
-      '';
-    };
+    # tmux = {
+      # enable = true;
+      # # catppuccin.enable = true;
+      # mouse = true;
+      # baseIndex = 1;
+      # keyMode = "vi";
+      # # shell = "fish";
+      # # shortcut = "a";   # ctrl+a instead of ctrl+b
+      # terminal = "tmux-256color";
+      # extraConfig = ''
+      #   set -ag terminal-overrides ",*:RGB"
+      #   bind | split-window -h -c "#{pane_current_path}"
+      #   bind - split-window -v -c "#{pane_current_path}"
+      # '';
+    # };
+    
 
     bat = {
       enable = true;
@@ -125,4 +130,9 @@
 
     diff-so-fancy.enable = false;
   };
+  
+  services.syncthing = {
+    enable = true;
+  };
 }
+

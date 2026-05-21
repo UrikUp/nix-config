@@ -4,7 +4,8 @@
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
-    kernelPackages = pkgs.linuxPackages_zen;
+    kernelPackages = pkgs.linuxPackages_latest;
+    # kernelPackages = pkgs.linuxPackages_zen;
     kernelModules = [ "uinput" "tcp_bbr" ];
     kernelParams = [
       "i915.enable_fbc=1"

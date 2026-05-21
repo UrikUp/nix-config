@@ -1,17 +1,18 @@
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     stylix = {
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+
     quickshell = {
       url = "git+https://git.outfoxxed.me/quickshell/quickshell";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    home-manager = {
-      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nur.url = "github:nix-community/NUR";
@@ -36,9 +37,10 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    determinate.url =
-      "https://flakehub.com/f/DeterminateSystems/determinate/*";
-    };
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
+    freesmlauncher.url = "github:FreesmTeam/FreesmLauncher";
+  };
+
 
   outputs = inputs: {
     nixosConfigurations.nixos = inputs.nixpkgs.lib.nixosSystem {
@@ -64,7 +66,6 @@
       modules = [
         ./home-manager/home.nix
         inputs.stylix.homeModules.stylix
-        # inputs.catppuccin.homeModules.catppuccin
         inputs.nvf.homeManagerModules.default
         inputs.vicinae.homeManagerModules.default
         inputs.spicetify-nix.homeManagerModules.spicetify

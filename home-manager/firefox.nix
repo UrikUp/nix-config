@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
-  # stylix.targets.firefox.profileNames = [ "urik" ];
+  stylix.targets.firefox.profileNames = [ "urik" ];
   programs.firefox = {
     enable = true;
 

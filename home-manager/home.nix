@@ -1,33 +1,22 @@
-{ inputs, pkgs, ... }:
+{ inputs, pkgs, config, lib, ... }:
 {
   imports = [
-    ./cli.nix
-    ./terminal.nix
-    ./media.nix
-    ./desktop.nix
-    ./dev.nix
-    # ./home/theming.nix
-    # ./home/stylix.nix
-    ./firefox.nix
-    ./rclone.nix
-    ./stylix.nix
+      ./cli.nix
+      ./terminal.nix
+      ./media.nix
+      ./desktop.nix
+      ./dev.nix
+      # ./home/theming.nix
+      # ./home/stylix.nix
+      ./firefox.nix
+      ./rclone.nix
+      ./stylix.nix
   ];
-
   home.username      = "urik";
   home.homeDirectory = "/home/urik";
   home.stateVersion  = "26.05";
   programs.home-manager.enable = true;
 
-  # catppuccin = {
-  #   foot.enable = false;
-  #   enable = true;
-  #   flavor = "mocha";
-  #   accent = "mauve";
-  # };
-  services.syncthing = {
-    enable = true;
-  };
-  
   home = {
     packages = [
       pkgs.inter
@@ -36,7 +25,6 @@
     ];
     sessionVariables = {
       EDITOR        = "hx";
-      PATH          = "$PATH:/home/urik/go/bin";
       XCURSOR_THEME = "Bibata-Modern-Classic";
       XCURSOR_SIZE  = "20";
       # workaround to make text bigger, but not to use scaling
@@ -52,5 +40,8 @@
       # 
       # QT_USE_PHYSICAL_DPI = "1";
     }; 
+    sessionPath = [
+      "$HOME/go/bin"        
+    ];
   };
 }

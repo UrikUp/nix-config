@@ -20,6 +20,8 @@
       kdePackages.qtsvg
       wl-clipboard-rs
       inputs.agenix.packages.x86_64-linux.default
+      zerotierone
+      sshfs
     ];
   };
 }

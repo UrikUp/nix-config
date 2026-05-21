@@ -31,6 +31,7 @@
   services.openssh.enable= true;
   services.dbus.packages = [ pkgs.gsettings-desktop-schemas ];
 
+  services.zerotierone.enable = true;
   services.xserver = {
     enable = true;
     windowManager.qtile.enable = true;
