@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -69,75 +69,52 @@
     ...
   }@inputs:
 
-  let
+let
     system = "x86_64-linux";
 
-    mkPkgs = import nixpkgs {
+    pkgs = import nixpkgs {
       inherit system;
-
       config.allowUnfree = true;
-
-      overlays = import ./overlays {
-        inherit inputs;
-      };
+      overlays = import ./overlays { inherit inputs; };
     };
 
-    mkHost = modules:
-      nixpkgs.lib.nixosSystem {
-        inherit system;
-
-        specialArgs = {
-          inherit inputs;
-        };
-
-        modules = modules ++ [
-          {
-            nixpkgs.overlays = import ./overlays {
-              inherit inputs;
-            };
-          }
-        ];
-    };
-
-    mkHome = modules:
-      home-manager.lib.homeManagerConfiguration {
-        pkgs = mkPkgs;
-
-        extraSpecialArgs = {
-          inherit inputs;
-        };
-
-        inherit modules;
-      };
   in {
     nixosConfigurations = {
-      nixos = mkHost [
-        ./hosts/desktop/configuration.nix
+      desktop = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./hosts/desktop/configuration.nix
+          stylix.nixosModules.stylix
+          determinate.nixosModules.default
+          agenix.nixosModules.default
+        ];
+      };
 
-        stylix.nixosModules.stylix
-        home-manager.nixosModules.default
-        determinate.nixosModules.default
-        agenix.nixosModules.default
-
-      ];
-      vps = mkHost [
-        disko.nixosModules.disko          # Loads disko module safely
-        ./hosts/vps/configuration.nix
-        ./hosts/vps/hardware-configuration.nix
-        determinate.nixosModules.default  # Optional: standardizes your nix daemon management
-      ];
+      vps = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = { inherit inputs; };
+        modules = [
+          disko.nixosModules.disko
+          ./hosts/vps/configuration.nix
+          ./hosts/vps/hardware-configuration.nix
+        ];
+      };
     };
-    homeConfigurations = {
-      "urik@nixos" = mkHome [
-        ./home/home.nix
-        stylix.homeModules.stylix
-        inputs.nvf.homeManagerModules.default
-        inputs.vicinae.homeManagerModules.default
-        inputs.spicetify-nix.homeManagerModules.spicetify
-        inputs.agenix.homeManagerModules.default
-      ];
 
-      # "urik@vps" = mkHome [ ];
+    homeConfigurations = {
+      "urik@nixos" = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        extraSpecialArgs = { inherit inputs; };
+        modules = [
+          ./home/home.nix
+          stylix.homeModules.stylix
+          inputs.nvf.homeManagerModules.default
+          inputs.vicinae.homeManagerModules.default
+          inputs.spicetify-nix.homeManagerModules.spicetify
+          inputs.agenix.homeManagerModules.default
+        ];
+      };
     };
   };
 }
