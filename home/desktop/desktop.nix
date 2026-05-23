@@ -8,6 +8,7 @@ in {
     libreoffice-qt
     telegram-desktop
     vesktop
+    legcord
     nautilus
     seahorse
     proton-vpn

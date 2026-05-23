@@ -1,8 +1,4 @@
 { pkgs, config, ... }:
-let
-  link = config.lib.file.mkOutOfStoreSymlink;
-  dots = "/home/urik/nix/home/dotfiles";
-in
 {
   home.packages = with pkgs; [
     stow
@@ -23,7 +19,6 @@ in
     tmux
   ];
 
-  xdg.configFile."tmux/tmux.conf".source = link "${dots}/tmux/tmux.conf";
   programs = {
     direnv = {
       enable = true;

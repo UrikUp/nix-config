@@ -37,13 +37,6 @@
     windowManager.qtile.enable = true;
   };
 
-  virtualisation.docker.enable = true;
-  systemd.services.docker = {
-    after  = [ "network.target" ];
-    wants  = [ "network.target" ];
-    wantedBy = [ "multi-user.target" ];
-  };
-
   services.udev.extraRules = ''
     KERNEL=="uinput", GROUP="input", MODE="0660"
   '';

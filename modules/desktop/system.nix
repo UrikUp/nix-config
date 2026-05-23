@@ -7,10 +7,6 @@
   };
 
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
-    auto-optimise-store = true;
-    max-jobs = "auto";
-    cores = 0;
     substituters = [
       "https://aseipp-nix-cache.global.ssl.fastly.net"
       "https://nix-community.cachix.org"
@@ -19,7 +15,6 @@
       "https://vicinae.cachix.org"
       "https://freesmlauncher.cachix.org"
     ];
-
     trusted-public-keys = [
       "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="

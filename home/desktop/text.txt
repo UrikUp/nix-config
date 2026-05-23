@@ -1,0 +1,594 @@
+===== ./media.nix =====
+{ pkgs, ... }: {
+  home.packages = with pkgs; [
+    acpi
+    ffmpeg
+    pavucontrol
+  ];
+
+  programs.mpv = {
+    enable = true;
+    # catppuccin.enable = true;
+    config = {
+      profile = "gpu-hq";
+      vo = "gpu";
+      hwdec = "auto-safe";
+      sub-auto = "fuzzy";
+      sub-font-size = 40;
+    };
+    bindings = {
+      "l" = "seek 5";
+      "h" = "seek -5";
+      "j" = "seek -60";
+      "k" = "seek 60";   # vim-style seeking
+    };
+  };
+  programs.obs-studio = {
+    enable = true;
+    plugins = with pkgs.obs-studio-plugins; [
+      obs-backgroundremoval
+      obs-pipewire-audio-capture
+      wlrobs   # wayland screen capture
+      advanced-scene-switcher
+      ];
+    };
+}
+
+===== ./dev.nix =====
+{ pkgs, ...}:
+{
+  home.packages = with pkgs; [
+    # gui
+    vscode
+    pgadmin4-desktopmode
+    adminer
+    bruno
+    sniffnet
+
+    # tui
+    presenterm
+    wifitui
+    pdf-cli
+    ffmpeg
+    uv
+
+    # dependencies and runtimes
+    php83 php83Packages.composer
+    android-tools
+    (python3.withPackages (ps: with ps; [ requests numpy pandas ]))
+
+    ruff ty # for python
+    vscode-langservers-extracted # for html and django templates
+  ];
+  
+}
+
+===== ./rclone.nix =====
+#rclone.nix
+{config, pkgs, ...}:
+{
+  home={
+    packages = [pkgs.rclone];
+    shellAliases = {
+      "reload-rclone"="systemctl --user restart rCloneMounts.service";
+    };
+  };
+
+  systemd.user.services.rCloneMounts = {
+    Unit = {
+      Description = "Mount all rClone configurations";
+      After = [ "network-online.target" ];
+    };
+    Service = let home = config.home.homeDirectory; in {
+      Type = "forking";
+      ExecStartPre = "${pkgs.writeShellScript "rClonePre" ''
+      remotes=$(${pkgs.rclone}/bin/rclone --config=${home}/.config/rclone/rclone.conf listremotes)
+      for remote in $remotes;
+      do
+      name=$(/usr/bin/env echo "$remote" | /usr/bin/env sed "s/://g")
+      /usr/bin/env mkdir -p ${home}/"$name"
+      done
+      '' }";
+      
+      ExecStart = "${pkgs.writeShellScript "rCloneStart" ''
+      remotes=$(${pkgs.rclone}/bin/rclone --config=${home}/.config/rclone/rclone.conf listremotes)
+      for remote in $remotes;
+      do
+      name=$(/usr/bin/env echo "$remote" | /usr/bin/env sed "s/://g")
+      ${pkgs.rclone}/bin/rclone --config=${home}/.config/rclone/rclone.conf --vfs-cache-mode minimal --ignore-checksum mount "$remote" "$name" &
+      done
+      '' }";
+
+      ExecStop = "${pkgs.writeShellScript "rCloneStop" ''
+      remotes=$(${pkgs.rclone}/bin/rclone --config=${home}/.config/rclone/rclone.conf listremotes)
+      for remote in $remotes;
+      do
+      name=$(/usr/bin/env echo "$remote" | /usr/bin/env sed "s/://g")
+      /usr/bin/env fusermount -u ${home}/"$name"
+      done
+      '' }";
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+}
+
+===== ./home.nix =====
+{ inputs, pkgs, config, lib, ... }:
+{
+  imports = [
+      ./common/default.nix
+
+      ./terminal.nix
+      ./media.nix
+      ./desktop.nix
+      ./dev.nix
+      ./firefox.nix
+      ./rclone.nix
+      ./stylix.nix
+  ];
+  home.username      = "urik";
+  home.homeDirectory = "/home/urik";
+  home.stateVersion  = "26.05";
+  programs.home-manager.enable = true;
+
+  home = {
+    sessionVariables = {
+      EDITOR        = "hx";
+      XCURSOR_THEME = "Bibata-Modern-Classic";
+      XCURSOR_SIZE  = "20";
+      # workaround to make text bigger, but not to use scaling
+      GDK_SCALE = "1";
+      GDK_DPI_SCALE = "1.25";   # was 1.2 → bigger
+      # QT_SCALE_FACTOR = "0.9";
+      QT_SCALE_FACTOR = "1";
+      QT_FONT_DPI = "125";      # was 120 → bigger
+      XFT_DPI = "125";          # was 120 → bigger
+      MOZ_ENABLE_WAYLAND = "1";
+      QT_QPA_PLATFORM = "wayland";
+      QT_AUTO_SCREEN_SCALE_FACTOR = "0";
+      # 
+      # QT_USE_PHYSICAL_DPI = "1";
+    }; 
+    sessionPath = [
+      "$HOME/go/bin"        
+    ];
+  };
+}
+
+===== ./terminal.nix =====
+{ pkgs, ... }: {
+  programs.kitty = {
+    enable = true;
+    # catppuccin.enable = true;
+    font = {
+      name = "JetBrainsMono Nerd Font";
+      # size = 14;
+    };
+    settings = {
+      window_padding_width = 4;
+      scrollback_lines = 10000;
+      enable_audio_bell = false;
+      cursor_shape = "block";
+      cursor_trail = 1;
+      cursor_blink_interval = "1";
+      shell = "fish";
+      shell_integrations = "enabled";
+      strip_trailing_spaces = "smart";
+      tab_bar_style = "powerline";
+      tab_bar_align = "left";
+
+    };
+
+    # keybindings = {
+    #   "ctrl+shift+enter" = "new_window_with_cwd";
+    #   "ctrl+shift+t"     = "new_tab_with_cwd";
+    # };
+  };
+  programs.foot = {
+    enable = true;
+    server.enable = true;
+    settings = {
+      main = {
+        # font = "JetBrainsMono Nerd Font:size=14";
+        shell = "fish";
+        # pad = "";
+      };
+      cursor = {
+        style = "block";
+        blink = "yes";
+      };
+    # colors-dark = {
+    #   background = "1e1e2e";
+    #   foreground = "cdd6f4";
+    #   regular0 = "45475a";
+    #   regular1 = "f38ba8";
+    #   regular2 = "a6e3a1";
+    #   regular3 = "f9e2af";
+    #   regular4 = "89b4fa";
+    #   regular5 = "f5c2e7";
+    #   regular6 = "94e2d5";
+    #   regular7 = "bac2de";
+    #   bright0 = "585b70";
+    #   bright1 = "f38ba8";
+    #   bright2 = "a6e3a1";
+    #   bright3 = "f9e2af";
+    #   bright4 = "89b4fa";
+    #   bright5 = "f5c2e7";
+    #   bright6 = "94e2d5";
+    #   bright7 = "a6adc8";
+    #   };
+    };
+  };
+}
+
+===== ./desktop.nix =====
+{ pkgs, inputs, ... }: 
+let
+  spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.system};
+in {
+  home.packages = with pkgs; [
+    zotero
+    obsidian
+    libreoffice-qt
+    telegram-desktop
+    vesktop
+    nautilus
+    seahorse
+    proton-vpn
+    blender
+    onlyoffice-desktopeditors
+
+    # bottles
+    # microsoft-edge
+    # games
+    hydralauncher
+    cemu
+    gamescope
+    gamemode
+    qbittorrent
+    pcsx2
+    appimage-run
+    inputs.freesmlauncher.packages.${pkgs.system}.freesmlauncher
+    mangohud
+  ];
+  
+  programs.lutris = {
+    enable = true;
+
+    defaultWinePackage = pkgs.proton-ge-bin;
+    protonPackages = [ pkgs.proton-ge-bin ]; # config.programs.steam.extraCompatPackages;
+  };
+
+
+  programs.spicetify = {
+    enable = true;
+    enabledExtensions = with spicePkgs.extensions; [
+      adblockify
+      hidePodcasts
+      shuffle
+      songStats
+      autoVolume
+      beautifulLyrics
+    ];
+  };
+
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "text/html"              = "firefox.desktop";
+      "x-scheme-handler/http"  = "firefox.desktop";
+      "x-scheme-handler/https" = "firefox.desktop";
+      "application/pdf"        = "firefox.desktop";
+    };
+  };
+  services.vicinae = {
+  enable = true;
+  systemd = {
+    enable = true;
+    autoStart = true; # default: false
+    environment = {
+      USE_LAYER_SHELL = 1;
+    };
+  };
+
+  settings = {
+    close_on_focus_loss = true;
+    consider_preedit = true;
+    pop_to_root_on_close = true;
+    favicon_service = "twenty";
+    search_files_in_root = true;
+  };
+  extensions = with inputs.vicinae-extensions.packages.${pkgs.stdenv.hostPlatform.system}; [
+     bluetooth
+     nix
+     # power-profile
+    # Extension names can be found in the link below, it's just the folder names
+    ];
+  };
+
+  services.syncthing = {
+    enable = true;
+  };
+}
+
+===== ./common/cli.nix =====
+{ pkgs, config, ... }:
+let
+  link = config.lib.file.mkOutOfStoreSymlink;
+  dots = "/home/urik/nix/home/dotfiles";
+in
+{
+  home.packages = with pkgs; [
+    stow
+    eza    
+    fd
+    gh
+    mosh
+    evil-helix
+    jq
+    ripgrep
+    lazygit
+    btop
+    devenv
+    wget
+    tldr
+    p7zip unzip zip
+    fastfetch
+    tmux
+  ];
+
+  xdg.configFile."tmux/tmux.conf".source = link "${dots}/tmux/tmux.conf";
+  programs = {
+    direnv = {
+      enable = true;
+      enableFishIntegration = true; # see note on other shells below
+      nix-direnv.enable = true;
+    };
+    fish = {
+      enable = true;
+      interactiveShellInit = ''
+        set fish_greeting
+        zoxide init fish --cmd cd | source
+        fzf --fish | source
+      '';
+     plugins = map (p: { name = p; src = pkgs.fishPlugins.${p}.src; }) [
+        "tide"
+        "fzf-fish"
+        "autopair"
+        "done"
+        # "sponge" # get irritating when fixing commands
+        "colored-man-pages"
+        "puffer" # makes ... -> ../..
+      ];
+    };
+    zoxide = {
+      enable = true;
+      enableFishIntegration = true;
+    };
+    # starship = {
+    #   enable = true;
+    #   enableFishIntegration = true;
+    # };
+    fzf = {
+      enable = true;
+      enableFishIntegration = true;
+    };
+    yazi = {
+      enable = true;
+      enableFishIntegration = true;
+      settings = {
+        manager = {
+          show_hidden = true;
+          sort_by = "natural";
+          sort_dir_first = true;
+        };
+      };
+    };
+    # tmux = {
+      # enable = true;
+      # # catppuccin.enable = true;
+      # mouse = true;
+      # baseIndex = 1;
+      # keyMode = "vi";
+      # # shell = "fish";
+      # # shortcut = "a";   # ctrl+a instead of ctrl+b
+      # terminal = "tmux-256color";
+      # extraConfig = ''
+      #   set -ag terminal-overrides ",*:RGB"
+      #   bind | split-window -h -c "#{pane_current_path}"
+      #   bind - split-window -v -c "#{pane_current_path}"
+      # '';
+    # };
+    
+
+    bat = {
+      enable = true;
+      # catppuccin.enable = true; # doesn't exits
+      config = {
+        style = "numbers,changes,header";
+        wrap = "never";
+      };
+    };
+    git = {
+      enable = true;
+      settings = {
+        credential.helper = "!gh auth git-credential";
+        user = {
+          name = "UrikUp";
+          email = "975urikup@gmail.com";
+        };
+        delta = {
+          navigate = true;
+          side-by-side = true;
+        };
+      };
+    };
+
+    delta = {
+      enable = true;
+      enableGitIntegration = true;
+    };
+
+    diff-so-fancy.enable = false;
+  };
+  
+}
+
+
+===== ./common/default.nix =====
+{
+  imports = [
+    ./cli.nix
+  ];
+}
+
+===== ./firefox.nix =====
+{ pkgs, ... }:
+{
+  stylix.targets.firefox.profileNames = [ "urik" ];
+  programs.firefox = {
+    enable = true;
+
+    profiles.urik = {
+      isDefault = true;
+
+      extensions = {
+        force = true;
+        packages = with pkgs.nur.repos.rycee.firefox-addons; [
+          ublock-origin
+          sponsorblock
+          vimium
+          bitwarden
+          darkreader
+        ];
+      };
+
+    
+      # userChrome = ''
+      #   /* Hide native tab bar when Sidebery is active */
+      #   #main-window[titlepreface="."] #TabsToolbar > * { display: none !important; }
+      #   #main-window[titlepreface="."] #nav-bar { border-color: transparent !important; }
+
+      #   /* Hide Firefox's new sidebar UI, keep Sidebery's */
+      #   #sidebar-main,
+      #   #sidebar-launcher-splitter { display: none !important; }
+      #   #sidebar-panel-header        { display: none; }
+      #   #sidebar-box                 { padding: 0 !important; }
+      #   #sidebar-box #sidebar {
+      #     box-shadow:    none !important;
+      #     border:        none !important;
+      #     outline:       none !important;
+      #     border-radius: 0    !important;
+      #   }
+      # '';
+
+  
+      settings = {
+        # --- userChrome.css ---
+        "toolkit.legacyUserProfileCustomizations.stylesheets" = true;
+
+        # --- sync ---
+        "identity.fxaccounts.enabled"        = true;
+        "services.sync.engine.passwords"     = true;
+        "services.sync.engine.bookmarks"     = true;
+        "services.sync.engine.history"       = true;
+        "services.sync.engine.extensions"    = false; # managed by home-manager
+
+        # --- performance ---
+        "gfx.webrender.all"                  = true;   # GPU compositing
+        "media.ffmpeg.vaapi.enabled"         = true;   # VA-API hardware decode
+        "media.hardware-video-decoding.force-enabled" = true;
+        "browser.cache.disk.enable"          = false;
+        "browser.cache.memory.enable"        = true;
+        "browser.cache.memory.capacity"      = 524288; # 512 MB
+
+        # --- Wayland / XDG portals ---
+        # "widget.use-xdg-desktop-portal.file-picker"   = 1;
+        # "widget.use-xdg-desktop-portal.mime-handler"  = 1;
+        # "widget.wayland.fractional-scale.enabled" = false;
+
+        # --- new tab / startup ---
+        "browser.startup.homepage"                        = "about:blank";
+        "browser.newtabpage.enabled"                      = false;
+        "browser.shell.checkDefaultBrowser"               = false;
+        "browser.sessionstore.resume_previous_session"    = false;
+        "browser.tabs.warnOnClose"                        = false;
+      };
+
+      search = {
+        force   = true;
+        default = "google";
+        order   = [ "Searx" "Nix Packages" "NixOS Wiki" "google" ];
+
+        engines = {
+          "Nix Packages" = {
+            urls = [{
+              template = "https://search.nixos.org/packages";
+              params = [
+                { name = "type";  value = "packages";      }
+                { name = "query"; value = "{searchTerms}"; }
+              ];
+            }];
+            icon           = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+            definedAliases = [ "@np" ];
+          };
+
+          "NixOS Wiki" = {
+            urls = [{ template = "https://nixos.wiki/index.php?search={searchTerms}"; }];
+            icon           = "https://nixos.wiki/favicon.png";
+            updateInterval = 24 * 60 * 60 * 1000;
+            definedAliases = [ "@nw" ];
+          };
+
+          "Searx" = {
+            urls = [{ template = "https://priv.au/?q={searchTerms}"; }];
+            definedAliases = [ "@sx" ];
+          };
+          "google".metaData.alias = "@g";
+          "bing".metaData.hidden  = true;
+          };
+        };
+      };
+    };
+}
+
+===== ./stylix.nix =====
+{ pkgs, ... }:
+{
+  stylix = {
+    enable = true;
+    image = ../modules/wallpaper.jpg;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/default-dark.yaml";
+    polarity = "dark";
+    cursor = {
+      package = pkgs.bibata-cursors;
+      name = "Bibata-Modern-Classic";
+      size = 20;
+    };
+    fonts = {
+      sansSerif = {
+        package = pkgs.noto-fonts;
+        name = "Noto Sans";
+      };
+      serif = {
+        package = pkgs.noto-fonts;
+        name = "Noto Serif";
+      };
+      monospace = {
+        package = pkgs.nerd-fonts.jetbrains-mono;
+        name = "JetBrainsMono Nerd Font";
+      };
+      emoji = {
+        package = pkgs.noto-fonts-color-emoji;
+        name = "Noto Color Emoji";
+      };
+      sizes = {
+        applications = 11;
+        terminal = 14;
+        desktop = 11;
+        popups = 12;
+      };
+    };
+  };
+}
+

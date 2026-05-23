@@ -1,8 +1,8 @@
 { inputs, pkgs, config, lib, ... }:
 {
   imports = [
-      ./common/default.nix
-
+      ../common/default.nix
+      (import ../common/dotfiles.nix { liveEditable = false; })      
       ./terminal.nix
       ./media.nix
       ./desktop.nix
@@ -10,6 +10,7 @@
       ./firefox.nix
       ./rclone.nix
       ./stylix.nix
+      
   ];
   home.username      = "urik";
   home.homeDirectory = "/home/urik";

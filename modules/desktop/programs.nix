@@ -15,9 +15,11 @@
   programs.niri.enable = true;
   programs.xwayland.enable = true;
 
+  programs.gamemode.enable = true;
+
   programs.dms-shell = {
     enable = true;
-    quickshell.package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.quickshell;
+    # quickshell.package = inputs.quickshell.packages.${pkgs.stdenv.hostPlatform.system}.quickshell;
   };
 
   programs.steam = {
