@@ -467,11 +467,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1778860875,
-        "narHash": "sha256-gQAJnb2sPKdykl7+CP6j8qlt2d5ron1+juu1XlPD5WM=",
+        "lastModified": 1779540599,
+        "narHash": "sha256-PyEVqfKQ7wKenG0Zmr1PibN6P38SvWTvnKt6tFfVGx0=",
         "owner": "FreesmTeam",
         "repo": "FreesmLauncher",
-        "rev": "cc1f766b1cc53c6aa9602b3b2384a5e00a76c56f",
+        "rev": "702327105fa42fa2a7f7a837b84115e873fe84d0",
         "type": "github"
       },
       "original": {
@@ -817,16 +817,16 @@
     },
     "nixpkgs_6": {
       "locked": {
-        "lastModified": 1779475168,
-        "narHash": "sha256-gm3D4FF9EcZlXK/ZnsC6IYzpEQplOoT+LPTurzOPyrk=",
+        "lastModified": 1779357205,
+        "narHash": "sha256-cCO8aTqss5x9Ky8GWkpY0Hy5fyTZEbtifSUV8QjSzic=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "a0991c886dc83e6e9de01d5266e4842985b1850e",
+        "rev": "f83fc3c307e74bc5fd5adb7eb6b8b13ffd2a36e1",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixpkgs-unstable",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -869,11 +869,11 @@
         "nixpkgs": "nixpkgs_7"
       },
       "locked": {
-        "lastModified": 1779533926,
-        "narHash": "sha256-+0s3p4NRawaQm9g7LgtmVSKfmzj9rWIWvDjdlBeAHZM=",
+        "lastModified": 1779540070,
+        "narHash": "sha256-Zb7cpUry+mlsUee/zqjf9xDQAcRtp38UZ2w71QZJNy0=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "255647b232bfb564ce3ba4d1a79055d8a0d76be0",
+        "rev": "5d2022818c0907242656eb098a6fc63ffc1f70fe",
         "type": "github"
       },
       "original": {
@@ -1198,11 +1198,11 @@
         "systems": "systems_6"
       },
       "locked": {
-        "lastModified": 1779481002,
-        "narHash": "sha256-EbIepv79FSCZ2nOdbQn5lXaPJs4zTFwyVQwDKVfsVgQ=",
+        "lastModified": 1779542953,
+        "narHash": "sha256-IiCqeMTnjms0IAyTPfMpx1Ej+luVINrAq+sEhL3qxBs=",
         "owner": "vicinaehq",
         "repo": "vicinae",
-        "rev": "c88debfbdd68cfcec32a32dc06a26607178270fc",
+        "rev": "93714ddefcb3c362966e5c3c9b57e0dda392847f",
         "type": "github"
       },
       "original": {

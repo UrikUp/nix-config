@@ -7,13 +7,15 @@ in {
     obsidian
     libreoffice-qt
     telegram-desktop
-    vesktop
+    # vesktop
     legcord
-    nautilus
     seahorse
     proton-vpn
     blender
     onlyoffice-desktopeditors
+    # kdePackages.dolphin
+    # nautilus
+    thunar
 
     # bottles
     # microsoft-edge
@@ -21,7 +23,7 @@ in {
     hydralauncher
     cemu
     gamescope
-    gamemode
+    # gamemode # defined inside modules
     qbittorrent
     pcsx2
     appimage-run
@@ -59,13 +61,14 @@ in {
     };
   };
   services.vicinae = {
-  enable = true;
-  systemd = {
+    package = pkgs.vicinae;
     enable = true;
-    autoStart = true; # default: false
-    environment = {
-      USE_LAYER_SHELL = 1;
-    };
+    systemd = {
+      enable = true;
+      autoStart = true; # default: false
+      environment = {
+        USE_LAYER_SHELL = 1;
+      };
   };
 
   settings = {

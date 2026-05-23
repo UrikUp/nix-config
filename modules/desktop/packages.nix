@@ -23,6 +23,7 @@
       inputs.agenix.packages.x86_64-linux.default
       zerotierone
       sshfs
+      kdePackages.polkit-kde-agent-1
     ];
   };
 }

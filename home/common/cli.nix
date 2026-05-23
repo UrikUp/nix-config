@@ -17,6 +17,7 @@
     p7zip unzip zip
     fastfetch
     tmux
+    dua
   ];
 
   programs = {
