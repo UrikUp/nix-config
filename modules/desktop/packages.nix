@@ -24,6 +24,9 @@
       zerotierone
       sshfs
       kdePackages.polkit-kde-agent-1
+      f2fs-tools
+      exfatprogs
+      deploy-rs
     ];
   };
 }

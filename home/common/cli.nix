@@ -18,6 +18,7 @@
     fastfetch
     tmux
     dua
+    croc
   ];
 
   programs = {

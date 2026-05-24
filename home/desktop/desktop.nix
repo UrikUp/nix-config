@@ -16,6 +16,7 @@ in {
     # kdePackages.dolphin
     # nautilus
     thunar
+    # inputs.llm-agents.packages.${pkgs.system}.handy
 
     # bottles
     # microsoft-edge
@@ -31,6 +32,14 @@ in {
     mangohud
   ];
   
+  programs.helium = {
+    enable = true;
+    flags = [
+      "--force-device-scale-factor=1.30"
+      "--ozone-platform-hint=auto"
+    ];
+  };
+
   programs.lutris = {
     enable = true;
 

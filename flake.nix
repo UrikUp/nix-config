@@ -44,6 +44,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     freesmlauncher.url = "github:FreesmTeam/FreesmLauncher";
+    helium-flake = {
+      url = "github:oxcl/nix-flake-helium-browser";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
  outputs = {
@@ -84,6 +88,7 @@
           disko.nixosModules.disko
           ./hosts/vps/configuration.nix
           ./hosts/vps/hardware-configuration.nix
+          ./modules/server/nginx.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -112,10 +117,12 @@
           inputs.vicinae.homeManagerModules.default
           inputs.spicetify-nix.homeManagerModules.spicetify
           inputs.agenix.homeManagerModules.default
+          inputs.helium-flake.homeModules.default
         ];
       };
     };
 
+    # for deploying
     deploy.nodes.vps = {
       hostname = "107.172.153.94";
       sshUser = "urik";
