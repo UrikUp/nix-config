@@ -16,10 +16,8 @@ in {
     # kdePackages.dolphin
     # nautilus
     thunar
-    # inputs.llm-agents.packages.${pkgs.system}.handy
+    taskwarrior3
 
-    # bottles
-    # microsoft-edge
     # games
     hydralauncher
     cemu

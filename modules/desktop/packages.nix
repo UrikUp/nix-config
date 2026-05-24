@@ -27,6 +27,11 @@
       f2fs-tools
       exfatprogs
       deploy-rs
+      # OCR
+      tesseract
+      grim
+      slurp
+      imagemagick
     ];
   };
 }

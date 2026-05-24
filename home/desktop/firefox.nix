@@ -6,15 +6,22 @@
 
     profiles.urik = {
       isDefault = true;
+      id = 0;
 
       extensions = {
         force = true;
         packages = with pkgs.nur.repos.rycee.firefox-addons; [
+          auto-tab-discard
+          chrome-mask
+          # close-all-tabs
+          proton-vpn
           ublock-origin
           sponsorblock
           vimium
-          bitwarden
+          # bitwarden
           darkreader
+
+
         ];
       };
 
@@ -73,7 +80,7 @@
       search = {
         force   = true;
         default = "google";
-        order   = [ "Searx" "Nix Packages" "NixOS Wiki" "google" ];
+        order   = [ "Searx" "Nix Packages" "NixOS Wiki" "google" "exa"];
 
         engines = {
           "Nix Packages" = {
@@ -98,6 +105,15 @@
           "Searx" = {
             urls = [{ template = "https://priv.au/?q={searchTerms}"; }];
             definedAliases = [ "@sx" ];
+          };
+          "Exa" = {
+            urls = [{
+              template = "https://search.exa.ai/search";
+              params = [
+                  { name = "q"; value = "{searchTerms}"; }
+                ];
+              }];
+            definedAliases = [ "@e" ];
           };
           "google".metaData.alias = "@g";
           "bing".metaData.hidden  = true;

@@ -6,6 +6,7 @@
     pgadmin4-desktopmode
     adminer
     bruno
+    zeal # offline documenation
     sniffnet
 
     # tui
