@@ -17,6 +17,8 @@ in {
     # nautilus
     thunar
     taskwarrior3
+    freelens-bin
+
 
     # games
     hydralauncher
@@ -30,6 +32,10 @@ in {
     mangohud
   ];
   
+  programs.zen-browser = {
+    enable = true;
+    setAsDefaultBrowser = true;
+  };
   programs.helium = {
     enable = true;
     flags = [
@@ -96,4 +102,7 @@ in {
   services.syncthing = {
     enable = true;
   };
+  virtualisation.libvirtd.enable = true;
+programs.virt-manager.enable = true;
+users.users.urik.extraGroups = [ "libvirtd" ];
 }

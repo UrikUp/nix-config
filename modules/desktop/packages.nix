@@ -27,11 +27,18 @@
       f2fs-tools
       exfatprogs
       deploy-rs
+
       # OCR
       tesseract
       grim
       slurp
       imagemagick
+
+      # k8s
+      kubectl
+      k3d
+
+      
     ];
   };
 }

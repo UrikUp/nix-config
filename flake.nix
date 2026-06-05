@@ -48,7 +48,14 @@
       url = "github:oxcl/nix-flake-helium-browser";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-  };
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+     };  
+   };
+ };
 
  outputs = {
     self,
@@ -118,6 +125,7 @@
           inputs.spicetify-nix.homeManagerModules.spicetify
           inputs.agenix.homeManagerModules.default
           inputs.helium-flake.homeModules.default
+          inputs.zen-browser.homeModules.beta
         ];
       };
     };

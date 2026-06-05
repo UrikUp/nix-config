@@ -37,6 +37,8 @@
     windowManager.qtile.enable = true;
   };
 
+  services.ollama.enable = true;
+
   services.udev.extraRules = ''
     KERNEL=="uinput", GROUP="input", MODE="0660"
   '';
