@@ -14,6 +14,7 @@ let
 in {
   xdg.configFile = {
     "tmux/tmux.conf".source    = source "tmux/tmux.conf";
+    # "niri/config.kdl".source   = source "niri/config.kdl";
     # "helix/config.toml".source = source "helix/config.toml";
   };
 }
